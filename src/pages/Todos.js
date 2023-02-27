@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Todo from "../components/Todo";
 import Header from "../components/Header";
 //firebase
@@ -37,6 +37,20 @@ const Todos = () => {
     }
   };
 
+  const handleFilters = useCallback(
+    (fetchedTodos) => {
+      if (filteredTodos === "completed") {
+        setTodos(fetchedTodos.filter((todo) => todo.isChecked === true));
+      } else if (filteredTodos === "uncompleted") {
+        setTodos(fetchedTodos.filter((todo) => todo.isChecked !== true));
+      } else {
+        setTodos(fetchedTodos);
+      }
+      console.log("okay");
+    },
+    [filteredTodos]
+  );
+
   //check if user is logged in, fetch data and filter data
   useEffect(() => {
     const authUser = getAuth();
@@ -51,20 +65,14 @@ const Todos = () => {
               id: doc.id,
             }));
             //filters
-            if (filteredTodos === "completed") {
-              setTodos(fetchedTodos.filter((todo) => todo.isChecked === true));
-            } else if (filteredTodos === "uncompleted") {
-              setTodos(fetchedTodos.filter((todo) => todo.isChecked !== true));
-            } else {
-              setTodos(fetchedTodos);
-            }
+            handleFilters(fetchedTodos);
           }
         );
       } else {
         setIsLoggedOut(true);
       }
     });
-  }, [filteredTodos]);
+  }, [filteredTodos, handleFilters]);
 
   const handleLogout = async () => {
     try {
