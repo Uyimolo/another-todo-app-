@@ -2,40 +2,32 @@ import { useCallback, useEffect, useState } from "react";
 import Todo from "../components/Todo";
 import Header from "../components/Header";
 //firebase
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { signOut, getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../config/firebase";
+import AddTodoForm from "../components/AddTodoForm";
+import Filters from "../components/Filters";
 
-const Todos = () => {
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
+const Todos = ({user, setUser}) => {
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [todos, setTodos] = useState([
     {
       isChecked: false,
-      todoText: "Please sign in to see your todos",
+      todoText: "Hello there, got some stuff for you to do 😏 ",
     },
+    {
+      isChecked: false,
+      todoText: "First task : Create an account or sign to existing account",
+    },
+    {
+      isChecked: false,
+      todoText: "Second task : Plan your day",
+    }
   ]);
   const [text, setText] = useState(null);
   const [menuActive, setMenuActive] = useState(false);
   const [filteredTodos, setFilteredTodos] = useState("");
-
-  const handleAddTodos = async (e) => {
-    e.preventDefault();
-    try {
-      if (text.length > 0) {
-        await addDoc(
-          collection(db, "users", `${auth.currentUser.email}`, "todos"),
-          {
-            todoText: text,
-            isChecked: false,
-          }
-        );
-        e.target.todoText.value = "";
-        setText("");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [todoListMain, setTodoListMain] = useState([])
 
   const handleFilters = useCallback(
     (fetchedTodos) => {
@@ -46,7 +38,6 @@ const Todos = () => {
       } else {
         setTodos(fetchedTodos);
       }
-      console.log("okay");
     },
     [filteredTodos]
   );
@@ -56,7 +47,7 @@ const Todos = () => {
     const authUser = getAuth();
     onAuthStateChanged(authUser, (user) => {
       if (user) {
-        setIsLoggedOut(false);
+        setUser(auth.currentUser.email);
         onSnapshot(
           collection(db, "users", `${auth.currentUser.email}`, "todos"),
           (snapshot) => {
@@ -64,24 +55,28 @@ const Todos = () => {
               ...doc.data(),
               id: doc.id,
             }));
+            setTodoListMain(fetchedTodos)
             //filters
             handleFilters(fetchedTodos);
           }
         );
-      } else {
-        setIsLoggedOut(true);
-      }
+      } 
+      // else {
+        
+      // }
     });
-  }, [filteredTodos, handleFilters]);
+  }, [filteredTodos, handleFilters, setUser]);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      setUser(null)
       setTodos([
         {
           isChecked: false,
           todoText: "Please sign in to see your todos",
         },
+        
       ]);
     } catch (err) {
       console.log(err);
@@ -92,31 +87,12 @@ const Todos = () => {
     <div className="min-h-screen w-full bg-slate-100">
       <Header
         setMenuActive={setMenuActive}
-        isLoggedOut={isLoggedOut}
+        user={user}
         menuActive={menuActive}
         handleLogout={handleLogout}
       />
-      {/* todo input */}
-      <form
-        onSubmit={(e) => handleAddTodos(e)}
-        className=" px-6 flex items-center mb-6 space-x-2 max-w-2xl mx-auto -translate-y-24"
-      >
-        <input
-          type="text"
-          name="todoText"
-          id="todotext"
-          className="px-12 w-11/12 text-sm h-12 rounded-md"
-          placeholder="What are we doing today..."
-          s
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 py-3 px-6 rounded-md text-gray-200 hover:bg-blue-500"
-        >
-          Add
-        </button>
-      </form>
+
+      <AddTodoForm text={text} setText={setText} />
       <div className="px-6 flex flex-col space-y-2 max-w-2xl mx-auto -translate-y-24">
         {todos.map((todo) => (
           <Todo
@@ -128,38 +104,9 @@ const Todos = () => {
         ))}
       </div>
       {/* filters */}
-      <div className="flex px-8 justify-between items-center max-w-2xl mx-auto bg-white -translate-y-16 shadow-2xl py-3">
-        <p
-          onClick={() => setFilteredTodos("all")}
-          className="cursor-pointer text-gray-500 text-sm font-semibold hover:text-blue-600"
-        >
-          All ({`${todos.length === 0 ? "None" : todos.length}`})
-        </p>
-        <p
-          onClick={() => setFilteredTodos("completed")}
-          className="cursor-pointer text-gray-500  text-sm font-semibold hover:text-blue-600"
-        >
-          Completed (
-          {`${
-            todos.filter((todo) => todo.isChecked).length === 0
-              ? "None"
-              : todos.filter((todo) => todo.isChecked).length
-          }`}
-          )
-        </p>
-        <p
-          onClick={() => setFilteredTodos("uncompleted")}
-          className="cursor-pointer text-gray-500  text-sm font-semibold hover:text-blue-600"
-        >
-          Not Completed (
-          {`${
-            todos.filter((todo) => !todo.isChecked).length === 0
-              ? "None"
-              : todos.filter((todo) => !todo.isChecked).length
-          }`}
-          )
-        </p>
-      </div>
+      {user && (
+        <Filters todos={todoListMain}  setFilteredTodos={setFilteredTodos} />
+      )}
     </div>
   );
 };

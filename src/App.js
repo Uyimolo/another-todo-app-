@@ -1,6 +1,5 @@
-import Register from "./pages/Register";
 import Todos from "./pages/Todos";
-import Login from "./pages/Login";
+import Auth from "./pages/Auth";
 
 import {
   createBrowserRouter,
@@ -8,17 +7,21 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import { useState } from "react";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route>
-      <Route index element={ <Todos />} />
-      <Route path="/signin" element={<Login />} />
-      <Route path="/signup" element={<Register />} />
-    </Route>
-  )
-);
+
+
 function App() {
+const [user, setUser] = useState(null)
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route>
+        <Route index element={<Todos user={user} setUser={setUser} />} />
+        <Route path="/auth" element={<Auth user={user} setUser={setUser}/>} />
+      </Route>
+    )
+  );
   return (
     <div className="w-screen">
       <RouterProvider router={router} />

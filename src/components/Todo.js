@@ -41,30 +41,39 @@ const Todo = ({ todoText, isChecked, id }) => {
       console.log(err);
     }
   };
+
+  const handleViewFullTodo = () => {
+    alert(todoText);
+  };
+
   return (
-    <div className="flex px-4 items-center w-full space-x-3 justify-auto bg-white h-12 max-h-fit relative shadow-2xl hover:bg-gray-100">
+    <div className="flex px-4 py-2 items-start w-full space-x-3 justify-left bg-white min-h-12 max-h-fit relative shadow-2xl shadow-gray-400 hover:bg-gray-100">
       <div
-        className="flex items-center justify-center rounded-full bg-gradient-to-br from-blue-400 via-blue-300 to-purple-400 w-5 h-5 cursor-pointer hover:from-purple-400 hover:to-blue-400"
+        className="flex items-center justify-center rounded-full bg-gradient-to-br from-blue-400 via-blue-300 to-purple-400 w-5 h-5 basis-6 mr-2 cursor-pointer hover:from-purple-400 hover:to-blue-400"
         onClick={() => handleCheck(id)}
       >
         {isChecked && <img src={good} alt="" className="w-3" />}
       </div>
-      <p className="text-gray-800 w-8/12 sm:w-9/12 truncate">{todoText}</p>
-      <div className="flex space-x-2 items-center absolute right-4 w-fit">
       <p
-        className=" px-2 py-1 border border-blue-600 rounded-md text-blue-600 text-xs font-semibold cursor-pointer"
-        onClick={() => handleEditTodo(id)}
+        className="text-gray-800 text w-full"
+        onClick={() => handleViewFullTodo()}
       >
-        Edit
+        {todoText}
       </p>
-      <img
-        src={dump}
-        onClick={() => handleDeleteTodo(id)}
-        alt=""
-        className="cursor-pointer"
-      />
+      <div className="flex space-x-2 items-center right-4 w-20">
+        <p
+          className=" px-2 py-1 border border-blue-600 rounded-md text-blue-600 text-xs font-semibold cursor-pointer"
+          onClick={() => handleEditTodo(id)}
+        >
+          Edit
+        </p>
+        <img
+          src={dump}
+          onClick={() => handleDeleteTodo(id)}
+          alt=""
+          className="cursor-pointer w-3 border rounded-md hover:border-red-400 md:w-5"
+        />
       </div>
-      
     </div>
   );
 };

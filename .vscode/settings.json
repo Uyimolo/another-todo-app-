@@ -1,0 +1,8 @@
+{
+  "files.autoSave": "afterDelay",
+  "editor.wordWrap": "on",
+  "editor.autoClosingBrackets": "always",
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "workbench.colorTheme": "Abyss",
+  "workbench.preferredDarkColorTheme": "Abyss"
+}
