@@ -1,6 +1,7 @@
 import Button from "./Button";
 
 const SigninForm = ({
+  error,
   setEmail,
   setPassword,
   handleEmailSignin,
@@ -37,7 +38,7 @@ const SigninForm = ({
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-
+    <p className="text-red-400 text-center h-2"> {error ? error : "Lets kick off"}</p>
       {/* login button */}
       <Button type="submit" text="Sign in" onClick={handleEmailSignin} />
 

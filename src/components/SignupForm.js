@@ -1,5 +1,6 @@
 import Button from "./Button";
 const SignupForm = ({
+  error,
   setEmail,
   setPassword,
   handleEmailSignup,
@@ -9,7 +10,7 @@ const SignupForm = ({
   return (
     <form
       action="#"
-      className="flex flex-col gap-y-6 pt-8 pb-12 px-6 max-w-xs mx-auto rounded-2xl bg-white border-2 border-gray-500 shadow transition-shadow hover:shadow-2xl md:mx-0 md:max-w-md md:gap-y-9"
+      className="flex flex-col gap-y-6 pt-8 pb-12 px-6 max-w-xs mx-auto rounded-2xl bg-white border-2 border-gray-500 shadow transition-shadow hover:shadow-2xl md:mx-0 md:max-w-md"
     >
       {/* email form group */}
       <div className="flex flex-col space-y-2 ">
@@ -36,7 +37,7 @@ const SignupForm = ({
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-
+      <p className="text-gray-500 text-center h-2"> {error ? error : ""}</p>
       {/* login button */}
       <Button type="submit" text="Sign up" onClick={handleEmailSignup} />
 

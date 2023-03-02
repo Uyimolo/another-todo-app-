@@ -12,6 +12,7 @@ const Todo = ({ todoText, isChecked, id }) => {
       );
     } catch (err) {
       console.log(err);
+      alert("couldn't carry out this operation, try checking your network or login if logged out.")
     }
   };
 
@@ -25,6 +26,7 @@ const Todo = ({ todoText, isChecked, id }) => {
       );
     } catch (err) {
       console.log(err);
+      alert("couldn't carry out this operation, try checking your network or login if logged out.")
     }
   };
 
@@ -39,11 +41,12 @@ const Todo = ({ todoText, isChecked, id }) => {
       );
     } catch (err) {
       console.log(err);
+      alert("couldn't carry out this operation, try checking your network or login if logged out.")
     }
   };
 
   const handleViewFullTodo = () => {
-    alert(todoText);
+    // alert(todoText);
   };
 
   return (

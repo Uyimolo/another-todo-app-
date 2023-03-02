@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, googleProvider } from "../config/firebase";
-import { createUserWithEmailAndPassword, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 import SignupForm from "../components/SignupForm";
 import SigninForm from "../components/SigninForm";
 import loginImage from "../images/undraw_join_re_w1lh.svg";
 import { Navigate } from "react-router-dom";
 
-const Auth = ({user, setUser}) => {
+const Auth = ({ user, setUser, error, setError }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [user, setUser] = useState(null);
   const [authMethod, setAuthMethod] = useState("signin");
 
-  //firebase auth email auth function
+  //firebase email auth function
   const handleEmailSignup = async (e) => {
     e.preventDefault();
     try {
@@ -30,6 +34,8 @@ const Auth = ({user, setUser}) => {
     } catch (err) {
       console.error(err);
       setUser(null);
+      // alert("something went wrong");
+      setError("something went wrong");
     }
   };
 
@@ -43,6 +49,8 @@ const Auth = ({user, setUser}) => {
     } catch (err) {
       console.log(err);
       setUser(null);
+      // alert("something went wrong");
+      setError("something went wrong");
     }
   };
   //firebase google Oauth function
@@ -55,11 +63,19 @@ const Auth = ({user, setUser}) => {
     } catch (err) {
       console.error(err);
       setUser(null);
+      // alert("something went wrong");
+      setError("something went wrong");
     }
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  }, [setError, error]);
+
   return (
-    <div className="py-4 px-5 bg-gradient-to-tr from-blue-100 via-blue-300 to-purple-100 min-h-screen">
+    <div className="py-4 px-5 bg-gradient-to-tr from-blue-100 via-blue-300 to-purple-100 min-h-screen relative">
       <h1 className="text-3xl text-blue-600 font-bold line-through tracking-widest lg:text-4xl">
         Todo App
       </h1>
@@ -75,6 +91,7 @@ const Auth = ({user, setUser}) => {
               handleEmailSignup={handleEmailSignup}
               handleGoogleSignin={handleGoogleSignin}
               setAuthMethod={setAuthMethod}
+              error={error}
             />
           ) : (
             <SigninForm
@@ -83,11 +100,12 @@ const Auth = ({user, setUser}) => {
               handleEmailSignin={handleEmailSignin}
               handleGoogleSignin={handleGoogleSignin}
               setAuthMethod={setAuthMethod}
+              error={error}
             />
           )}
         </div>
       </div>
-      {user && <Navigate to="/"/>}
+      {user && <Navigate to="/" />}
     </div>
   );
 };
